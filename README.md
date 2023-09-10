@@ -1657,7 +1657,7 @@ Architecture
 4. The encrypted DEK is stored next to the ciphertext generated earlier.
 
 #### 1.5.5.3. KMS Key Concepts
-![image](https://github.com/ben-elbert/AWS-SAA-C03-Notes/assets/12222205/26da893f-5c16-4d85-8d7a-51ca0d254adf)
+![image](https://github.com/ben-elbert/AWS-SAA-C03-Notes/assets/12222205/429b5ed3-667f-49b4-af19-4f29b6576747)
 - KMS keys are isolated to a region.
   - Never leave the region or KMS.
   - Cannot extract a KMS Key.
@@ -1696,6 +1696,12 @@ Neither aliases or keys are global by default.
 ### 1.5.6. KMS Key Demo
 
 Linux/macOS commands
+![image](https://github.com/ben-elbert/AWS-SAA-C03-Notes/assets/12222205/8e89faff-82f4-42b6-b80d-3326ad14c30b)
+- There is a difference between who is managing the key and who is using the key to encrypt decrypt
+- below we set who manages the key
+![image](https://github.com/ben-elbert/AWS-SAA-C03-Notes/assets/12222205/13f96a94-c7d5-4b64-b885-75eb1c2814fb)
+- below we set who can use the key
+![image](https://github.com/ben-elbert/AWS-SAA-C03-Notes/assets/12222205/b0ea74b3-3733-44dd-b94e-6daf690d0a18)
 
 ```bash
 aws kms encrypt \
@@ -1731,7 +1737,8 @@ Client-Side encryption
 - The encryption burden is on the customer and not AWS.
 
 Server-Side encryption
-
+![image](https://github.com/ben-elbert/AWS-SAA-C03-Notes/assets/12222205/ca3f1be1-62a8-42b5-89c5-b2c366c005e5)
+- SSE is now mandatory on S3 by default. we only choose which type of sse to use.
 - Data is encrypted in transit using HTTPS
 - Data inside the tunnel is still in its original unencrypted form.
 - Data reaches S3 server in plain text form.
@@ -1758,15 +1765,20 @@ The hash can identify if the specific key was used to encrypt the object.
 To decrypt the object, you must tell S3 which object to decrypt and provide it with the key used to encrypt it. If the key that you supply is correct, compare by the proper hash, S3 will decrypt the object, discard the key, and return the plaintext version of the object.
 
 #### 1.5.7.2. SSE-S3 AES256 (Server-side encryption w/ Amazon S3 managed keys)
-![Stacks](../main/attachments/Clipboard_2022-09-12-23-00-48.png?raw=true "Optional Title")
+![image](https://github.com/ben-elbert/AWS-SAA-C03-Notes/assets/12222205/adfca14b-853e-4095-8843-87c9792cd59f)
 AWS handles both the encryption and decryption process as well as the key generation and management. This provides very little control over how the keys are used, but has little admin overhead.
+A good default type of encryption. No role separation in this encryption method.
 
-SSE-S3 Encryption Steps
+ROLE SEPERATION DEFINTION:
+I mean by role separation is that a full S3 administrator, somebody who has full S3 permissions to configure the bucket and manage the objects, then he or she can also decrypt
+and view data. You can't stop an S3 full administrator from viewing data when using this type of server-side-encryption. 
+
+SSE-S3 Encryption Steps:
 
 1. When putting data into S3, only need to provide plaintext.
 2. S3 generates fully managed and rotated **master key** automatically.
 3. Object generates a key specific for each object that is uploaded.
-4. The master key is used to encrypt the specific object key, and the
+4. The S3 key (green key) is used to encrypt the specific object key, and the
 unencrypted version of that key is discarded.
 5. The encrypted file and encrypted key are stored side by side in S3.
 
@@ -1778,7 +1790,7 @@ Three Problems with this method:
 
 #### 1.5.8.3. SSE-KMS
 (Server-side encryption w/ customer master keys stored in AWS KMS)
-![Stacks](../main/attachments/Clipboard_2022-09-12-23-04-21.png?raw=true "Optional Title")
+![image](https://github.com/ben-elbert/AWS-SAA-C03-Notes/assets/12222205/c88e345b-f59f-4f81-9d2f-44eed9340757)
 Much like SSE-S3, where AWS handles both the keys and encryption process.
 KMS handles the master key and not S3. The first time an object is uploaded, S3 works with KMS to create an AWS managed KMS key. This is the default key which gets used in the future.
 
@@ -1794,6 +1806,9 @@ SSE-KMS Encryption Steps
 When uploading an object, you can create and use a customer managed key (KMS key). This allows the user to control the permissions and the usage of the key material. In regulated industries, this is reason enough to use SSE-KMS. You can also add logging and see any calls against this key from CloudTrail.
 
 The best benefit is the role separation. To decrypt any object, you need access to the CMK that was used to generate the unique key that encrypted them. The CMK is used to decrypt the data encryption key for that object. That decrypted data encryption key is used to decrypt the object itself. If you don't have access to KMS, you don't have access to the object.
+
+Summary
+![image](https://github.com/ben-elbert/AWS-SAA-C03-Notes/assets/12222205/10bebe0a-1fe4-4b0c-ba80-9584b2532e31)
 
 ### 1.5.8. S3 Object Storage Classes
 
