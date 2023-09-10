@@ -1657,7 +1657,7 @@ Architecture
 4. The encrypted DEK is stored next to the ciphertext generated earlier.
 
 #### 1.5.5.3. KMS Key Concepts
-
+![image](https://github.com/ben-elbert/AWS-SAA-C03-Notes/assets/12222205/26da893f-5c16-4d85-8d7a-51ca0d254adf)
 - KMS keys are isolated to a region.
   - Never leave the region or KMS.
   - Cannot extract a KMS Key.
